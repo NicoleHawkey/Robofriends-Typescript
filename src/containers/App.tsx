@@ -5,27 +5,43 @@ import Scroll from '../components/Scroll';
 import ErrorBoundry from '../components/ErrorBoundry';
 import './App.css';
 
-class App extends Component {
-    constructor() {
-        super()
+export interface IRobot {
+    name: string;
+    id: number;
+    email: string
+}
+
+interface IAppProps {
+}
+
+interface IAppState {
+    robots: Array<IRobot>;
+    searchfield: string;
+}
+
+
+class App extends React.Component<IAppProps, IAppState> {
+    constructor(props: IAppProps) {
+        super(props)
         this.state = {
             robots: [],
             searchfield: ''
         }
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         fetch('https://jsonplaceholder.typicode.com/users')
             .then(response=> response.json())
             .then(users => this.setState({ robots: users }));
     }
 
-    onSearchChange = (event) => {
-            this.setState({ searchfield: event.target.value })
+    onSearchChange = (event: React.SyntheticEvent<HTMLInputElement>): void => {
+            const target = event.target as HTMLInputElement;
+            this.setState({ searchfield: target.value });
     }
 
     render() {
-        const { robots, searchfield } = this.state;
+        const { robots, searchfield }: IAppState = this.state;
         const filteredRobots = robots.filter(robot =>{
         return robot.name.toLowerCase().includes(searchfield.toLowerCase())
         })
